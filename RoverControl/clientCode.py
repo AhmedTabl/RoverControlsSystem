@@ -1,17 +1,20 @@
 import socket
 import pygame
 
-# Initialize pygame and the controller
-pygame.init()
-controller = pygame.joystick.Joystick(0)
-controller.init()
-
-# Define the IP address and port of your receiver code
+# Define the IP address and port of receiver code
 server_ip = "127.0.0.1"
 server_port = 12345
 
 # Create a socket for communication
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+client_socket.connect((server_ip,server_port))
+
+# Initialize pygame and the controller
+pygame.init()
+controller = pygame.joystick.Joystick(0)
+controller.init()
+
 
 # Controller Buttons Index values
 BUTTON_X = 0
@@ -33,6 +36,7 @@ D_RIGHT = 14
 TRIGGER_THRESHOLD = 0.1
 button_states = [False] * controller.get_numbuttons()
 
+
 try:
     while True:
         for event in pygame.event.get():
@@ -51,7 +55,7 @@ try:
 
                 # Create and send Drive Command packet
                 drive_command = f"D_{left_pwm}_{right_pwm}"
-                client_socket.sendto(drive_command.encode(), (server_ip, server_port))
+                client_socket.send(drive_command.encode())
 
                 # Print the sent packet
                 #print("Sent Drive Command:", drive_command)
