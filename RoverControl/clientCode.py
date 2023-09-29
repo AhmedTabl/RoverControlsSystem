@@ -31,6 +31,7 @@ D_LEFT = 13
 D_RIGHT = 14
 
 TRIGGER_THRESHOLD = 0.1
+button_states = [False] * controller.get_numbuttons()
 
 try:
     while True:
@@ -57,19 +58,35 @@ try:
 
                 if event.axis == 4:  # L2
                     if event.value > TRIGGER_THRESHOLD:
-                        print("L2 trigger is pressed")
+                        print(f"L2 trigger is pressed at value {event.value}")
 
                 elif event.axis == 5:  # R2
                     if event.value > TRIGGER_THRESHOLD:
-                        print("R2 trigger is pressed")
+                        print(f"R2 trigger is pressed at value {event.value}")
 
-            elif event.type == pygame.JOYBUTTONDOWN:
-                # Read button presses
-                button = event.button
+            if event.type == pygame.JOYBUTTONDOWN:
 
-                if button == BUTTON_R3:
-                    print("lol")
+                button_pressed = event.button
 
+                button_states[button_pressed] = True  # Set the button state to pressed
+
+                print(f"Button {button_pressed} is pressed")
+
+
+            elif event.type == pygame.JOYBUTTONUP:
+
+                button_released = event.button
+
+                button_states[button_released] = False  # Set the button state to released
+
+                print(f"Button {button_released} is released")
+
+                # Check button states continuously
+
+            for button_index, is_pressed in enumerate(button_states):
+
+                if is_pressed:
+                    print(f"Button {button_index} is being held down")
 
 
 except KeyboardInterrupt:
