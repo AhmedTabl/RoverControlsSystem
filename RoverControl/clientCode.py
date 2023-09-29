@@ -7,8 +7,8 @@ controller = pygame.joystick.Joystick(0)
 controller.init()
 
 # Define the IP address and port of your receiver code
-server_ip = "127.0.0.1"  # Replace with the actual IP address
-server_port = 12345  # Replace with the actual port number
+server_ip = "127.0.0.1"
+server_port = 12345
 
 # Create a socket for communication
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -16,19 +16,21 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # Controller Buttons Index values
 BUTTON_X = 0
 BUTTON_O = 1
-BUTTON_TRIANGLE = 2
-BUTTON_SQUARE = 3
-BUTTON_L1 = 4
-BUTTON_R1 = 5
-BUTTON_L2 = 6
-BUTTON_R2 = 7
-BUTTON_SHARE = 8
-BUTTON_OPTIONS = 9
-BUTTON_L3 = 10
-BUTTON_R3 = 11
-BUTTON_PS = 12
-BUTTON_TOUCHPAD = 13
+BUTTON_SQUARE = 2
+BUTTON_TRIANGLE = 3
+BUTTON_SHARE = 4
+BUTTON_PS = 5
+BUTTON_OPTIONS = 6
+BUTTON_L3 = 7
+BUTTON_R3 = 8
+BUTTON_L1 = 9
+BUTTON_R1 = 10
+D_UP = 11
+D_DOWN = 12
+D_LEFT = 13
+D_RIGHT = 14
 
+TRIGGER_THRESHOLD = 0.1
 
 try:
     while True:
@@ -51,18 +53,25 @@ try:
                 client_socket.sendto(drive_command.encode(), (server_ip, server_port))
 
                 # Print the sent packet
-                print("Sent Drive Command:", drive_command)
+                #print("Sent Drive Command:", drive_command)
+
+                if event.axis == 4:  # L2
+                    if event.value > TRIGGER_THRESHOLD:
+                        print("L2 trigger is pressed")
+
+                elif event.axis == 5:  # R2
+                    if event.value > TRIGGER_THRESHOLD:
+                        print("R2 trigger is pressed")
 
             elif event.type == pygame.JOYBUTTONDOWN:
                 # Read button presses
                 button = event.button
 
-                if button == BUTTON_X:
+                if button == BUTTON_R3:
                     print("lol")
 
-        # Perform other actions and send additional control commands here
-        # ...
+
 
 except KeyboardInterrupt:
-    # Clean up and close the socket
+    # close the socket
     client_socket.close()
